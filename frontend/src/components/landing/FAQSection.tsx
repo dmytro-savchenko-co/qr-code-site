@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
-import { ChevronDown, ArrowRight } from "lucide-react";
+import { Plus, Minus, Info } from "lucide-react";
 
 interface FAQItem {
   question: string;
@@ -41,6 +41,31 @@ const faqTabs: FAQTab[] = [
         question: "How many QR codes can I create?",
         answer:
           "The number of QR codes you can create depends on your subscription plan. Our platform offers various plans to suit different needs.",
+      },
+      {
+        question: "Why shouldn't I use a free QR code generator?",
+        answer:
+          "Free QR code generators often lack essential features like analytics, dynamic editing, custom branding, and reliable uptime. They may also inject ads or expire your codes unexpectedly.",
+      },
+      {
+        question: "Can I download and use the QR codes from my trial period?",
+        answer:
+          "Yes, any QR codes you create during your trial period are fully functional and can be downloaded and used right away.",
+      },
+      {
+        question: "What information can I store in a QR code?",
+        answer:
+          "QR codes can store URLs, text, contact cards (vCards), WiFi credentials, email addresses, phone numbers, SMS messages, calendar events, and more.",
+      },
+      {
+        question: "When can I download my QR code?",
+        answer:
+          "You can download your QR code immediately after creating it. Simply customize your design and click the download button to save it in your preferred format.",
+      },
+      {
+        question: "Can I manage my QR codes using your platform?",
+        answer:
+          "Absolutely! Our dashboard lets you manage all your QR codes in one place. You can edit, track analytics, organize by folders, and update destinations at any time.",
       },
     ],
   },
@@ -90,21 +115,21 @@ function AccordionItem({ item }: { item: FAQItem }) {
   const [isOpen, setIsOpen] = useState(false);
 
   return (
-    <div className="border-b border-gray-200 last:border-b-0">
+    <div className="bg-white border border-gray-200 rounded-xl">
       <button
         onClick={() => setIsOpen((prev) => !prev)}
-        className="flex items-center justify-between w-full py-5 text-left gap-4 cursor-pointer"
+        className="flex items-center justify-between w-full px-6 py-5 text-left gap-4 cursor-pointer"
       >
         <span className="text-navy font-semibold text-base">
           {item.question}
         </span>
-        <motion.span
-          animate={{ rotate: isOpen ? 180 : 0 }}
-          transition={{ duration: 0.25 }}
-          className="flex-shrink-0"
-        >
-          <ChevronDown className="w-5 h-5 text-gray-400" />
-        </motion.span>
+        <span className="flex-shrink-0 w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center">
+          {isOpen ? (
+            <Minus className="w-4 h-4 text-navy" />
+          ) : (
+            <Plus className="w-4 h-4 text-navy" />
+          )}
+        </span>
       </button>
 
       <AnimatePresence initial={false}>
@@ -116,7 +141,7 @@ function AccordionItem({ item }: { item: FAQItem }) {
             transition={{ duration: 0.25, ease: "easeInOut" }}
             className="overflow-hidden"
           >
-            <p className="pb-5 text-gray-500 leading-relaxed text-sm">
+            <p className="px-6 pb-5 text-gray-500 leading-relaxed text-sm">
               {item.answer}
             </p>
           </motion.div>
@@ -132,27 +157,36 @@ export default function FAQSection() {
   return (
     <section className="w-full bg-white py-20 md:py-28">
       <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
-        {/* Heading */}
-        <motion.h2
+        {/* Heading row */}
+        <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, amount: 0.5 }}
           transition={{ duration: 0.5 }}
-          className="text-3xl md:text-4xl lg:text-5xl font-bold text-navy text-center"
+          className="flex items-start justify-between gap-4"
         >
-          Frequently Asked Questions
-        </motion.h2>
+          <h2 className="text-3xl md:text-4xl font-bold text-navy">
+            Frequently Asked Questions
+          </h2>
+          <Link
+            to="/faq"
+            className="inline-flex items-center gap-2 px-5 py-2.5 bg-white border border-gray-300 rounded-full text-primary font-semibold text-sm hover:border-primary transition-colors"
+          >
+            <Info className="w-4 h-4" />
+            Learn More
+          </Link>
+        </motion.div>
 
         {/* Tab buttons */}
-        <div className="mt-10 flex flex-wrap justify-center gap-3">
+        <div className="mt-10 flex flex-wrap gap-6 border-b border-gray-200">
           {faqTabs.map((tab, i) => (
             <button
               key={tab.label}
               onClick={() => setActiveTab(i)}
-              className={`px-5 py-2.5 rounded-full text-sm font-semibold transition-all duration-200 cursor-pointer ${
+              className={`pb-3 text-sm font-semibold transition-all duration-200 cursor-pointer border-b-2 ${
                 activeTab === i
-                  ? "bg-primary text-white shadow-md shadow-primary/25"
-                  : "bg-gray-100 text-gray-600 hover:bg-gray-200"
+                  ? "border-primary text-primary"
+                  : "border-transparent text-gray-500 hover:text-gray-700"
               }`}
             >
               {tab.label}
@@ -160,32 +194,18 @@ export default function FAQSection() {
           ))}
         </div>
 
-        {/* Accordion */}
+        {/* FAQ items as individual cards */}
         <motion.div
           key={activeTab}
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.3 }}
-          className="mt-8 bg-gray-50 rounded-2xl px-6 md:px-8"
+          className="mt-6 flex flex-col gap-3"
         >
           {faqTabs[activeTab].items.map((item) => (
             <AccordionItem key={item.question} item={item} />
           ))}
         </motion.div>
-
-        {/* Bottom link */}
-        <div className="mt-10 text-center">
-          <Link
-            to="/faq"
-            className="inline-flex items-center gap-1.5 text-primary font-semibold hover:text-primary-dark transition-colors"
-          >
-            Learn More
-            <ArrowRight className="w-4 h-4" />
-          </Link>
-          <p className="mt-1 text-gray-400 text-sm">
-            Frequently Asked Questions
-          </p>
-        </div>
       </div>
     </section>
   );

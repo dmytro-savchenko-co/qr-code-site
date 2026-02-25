@@ -18,6 +18,9 @@ import {
   MessageCircle,
   ChevronLeft,
   ChevronRight,
+  Mail,
+  MapPin,
+  Printer,
 } from 'lucide-react'
 import type { LucideIcon } from 'lucide-react'
 
@@ -101,7 +104,151 @@ const qrTypes: QRType[] = [
 ]
 
 /* ------------------------------------------------------------------ */
-/*  Component                                                          */
+/*  Phone Mockup Component                                             */
+/* ------------------------------------------------------------------ */
+
+function PhoneMockup() {
+  return (
+    <div className="relative mx-auto w-[220px] sm:w-[260px]">
+      {/* Phone frame */}
+      <div className="rounded-[2rem] border-[3px] border-primary bg-white p-2 shadow-lg">
+        {/* Notch */}
+        <div className="mx-auto mb-1 h-5 w-24 rounded-b-xl bg-primary/10" />
+
+        {/* Screen content */}
+        <div className="overflow-hidden rounded-[1.25rem] bg-gray-50">
+          {/* Status bar */}
+          <div className="flex items-center justify-between px-4 py-1.5 text-[10px] font-semibold text-gray-700">
+            <span>9:41</span>
+            <div className="flex items-center gap-1">
+              <div className="flex gap-[2px]">
+                <div className="h-[6px] w-[3px] rounded-sm bg-gray-600" />
+                <div className="h-[8px] w-[3px] rounded-sm bg-gray-600" />
+                <div className="h-[10px] w-[3px] rounded-sm bg-gray-600" />
+                <div className="h-[8px] w-[3px] rounded-sm bg-gray-300" />
+              </div>
+              <div className="ml-1 h-[10px] w-[18px] rounded-sm border border-gray-600 px-[1px] py-[1px]">
+                <div className="h-full w-3/4 rounded-[1px] bg-gray-600" />
+              </div>
+            </div>
+          </div>
+
+          {/* URL bar */}
+          <div className="mx-3 mb-3 rounded-full bg-white px-3 py-1.5 text-center text-[9px] text-gray-400 shadow-sm">
+            https://qr-code.io
+          </div>
+
+          {/* Placeholder image */}
+          <div className="mx-3 mb-3 flex h-24 items-center justify-center rounded-lg bg-gray-200">
+            <Image className="h-8 w-8 text-gray-400" />
+          </div>
+
+          {/* Text lines */}
+          <div className="mx-3 mb-3 space-y-2">
+            <div className="h-2 w-full rounded bg-gray-200" />
+            <div className="h-2 w-5/6 rounded bg-gray-200" />
+            <div className="h-2 w-4/6 rounded bg-gray-200" />
+          </div>
+
+          {/* CTA Button */}
+          <div className="mx-3 mb-4">
+            <div className="rounded-full bg-primary py-2 text-center text-[10px] font-semibold text-white">
+              Learn More
+            </div>
+          </div>
+
+          {/* Social circles */}
+          <div className="mb-4 flex items-center justify-center gap-2">
+            <div className="h-5 w-5 rounded-full bg-blue-500" />
+            <div className="h-5 w-5 rounded-full bg-pink-500" />
+            <div className="h-5 w-5 rounded-full bg-sky-400" />
+          </div>
+        </div>
+      </div>
+    </div>
+  )
+}
+
+/* ------------------------------------------------------------------ */
+/*  Sunburst Background                                                */
+/* ------------------------------------------------------------------ */
+
+function SunburstBackground() {
+  const lines = 24
+  return (
+    <div className="pointer-events-none absolute inset-0 flex items-center justify-center overflow-hidden">
+      {/* Offset to align with phone position (left column center) */}
+      <div className="absolute left-[25%] top-1/2 -translate-x-1/2 -translate-y-1/2 sm:left-[30%]">
+        {Array.from({ length: lines }).map((_, i) => (
+          <div
+            key={i}
+            className="absolute left-1/2 top-1/2 h-[500px] w-[1px] origin-bottom"
+            style={{
+              transform: `translate(-50%, -100%) rotate(${(360 / lines) * i}deg)`,
+              background: `linear-gradient(to top, rgba(51, 181, 229, 0.12) 0%, transparent 70%)`,
+            }}
+          />
+        ))}
+      </div>
+    </div>
+  )
+}
+
+/* ------------------------------------------------------------------ */
+/*  Floating Decoration Icons                                          */
+/* ------------------------------------------------------------------ */
+
+function FloatingIcons() {
+  return (
+    <div className="pointer-events-none absolute inset-0 hidden lg:block">
+      {/* Left side icons */}
+      <motion.div
+        animate={{ y: [0, -8, 0] }}
+        transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut' }}
+        className="absolute left-4 top-[15%] text-primary/20"
+      >
+        <Smartphone className="h-10 w-10" strokeWidth={1.5} />
+      </motion.div>
+      <motion.div
+        animate={{ y: [0, 8, 0] }}
+        transition={{ duration: 5, repeat: Infinity, ease: 'easeInOut', delay: 0.5 }}
+        className="absolute left-8 top-[45%] text-primary/20"
+      >
+        <Mail className="h-9 w-9" strokeWidth={1.5} />
+      </motion.div>
+      <motion.div
+        animate={{ y: [0, -6, 0] }}
+        transition={{ duration: 4.5, repeat: Infinity, ease: 'easeInOut', delay: 1 }}
+        className="absolute left-4 top-[72%] text-primary/20"
+      >
+        <MapPin className="h-10 w-10" strokeWidth={1.5} />
+      </motion.div>
+
+      {/* Right side icons */}
+      <motion.div
+        animate={{ y: [0, 8, 0] }}
+        transition={{ duration: 4.2, repeat: Infinity, ease: 'easeInOut', delay: 0.3 }}
+        className="absolute right-4 top-[20%] text-primary/20"
+      >
+        <Globe className="h-10 w-10" strokeWidth={1.5} />
+      </motion.div>
+      <motion.div
+        animate={{ y: [0, -8, 0] }}
+        transition={{ duration: 4.8, repeat: Infinity, ease: 'easeInOut', delay: 0.8 }}
+        className="absolute right-8 top-[55%] text-primary/20"
+      >
+        <Printer className="h-9 w-9" strokeWidth={1.5} />
+      </motion.div>
+
+      {/* Small blue dots near phone area */}
+      <div className="absolute left-[22%] top-[10%] h-2 w-2 rounded-full bg-primary/30" />
+      <div className="absolute left-[38%] top-[8%] h-1.5 w-1.5 rounded-full bg-primary/25" />
+    </div>
+  )
+}
+
+/* ------------------------------------------------------------------ */
+/*  Main Component                                                     */
 /* ------------------------------------------------------------------ */
 
 export default function QRTypesSection() {
@@ -160,7 +307,7 @@ export default function QRTypesSection() {
           </p>
         </motion.div>
 
-        {/* Scrollable type buttons */}
+        {/* ---- Circular icon type selector ---- */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -174,9 +321,9 @@ export default function QRTypesSection() {
               type="button"
               aria-label="Scroll left"
               onClick={() => scroll('left')}
-              className="absolute -left-2 top-1/2 z-10 -translate-y-1/2 rounded-full bg-white p-2 shadow-lg transition-colors hover:bg-gray-50 sm:-left-4"
+              className="absolute -left-2 top-1/2 z-10 flex h-9 w-9 -translate-y-1/2 items-center justify-center rounded-full border border-gray-200 bg-white shadow-md transition-colors hover:bg-gray-50 sm:-left-4"
             >
-              <ChevronLeft className="h-5 w-5 text-navy" />
+              <ChevronLeft className="h-4 w-4 text-gray-500" />
             </button>
           )}
 
@@ -186,16 +333,16 @@ export default function QRTypesSection() {
               type="button"
               aria-label="Scroll right"
               onClick={() => scroll('right')}
-              className="absolute -right-2 top-1/2 z-10 -translate-y-1/2 rounded-full bg-white p-2 shadow-lg transition-colors hover:bg-gray-50 sm:-right-4"
+              className="absolute -right-2 top-1/2 z-10 flex h-9 w-9 -translate-y-1/2 items-center justify-center rounded-full border border-gray-200 bg-white shadow-md transition-colors hover:bg-gray-50 sm:-right-4"
             >
-              <ChevronRight className="h-5 w-5 text-navy" />
+              <ChevronRight className="h-4 w-4 text-gray-500" />
             </button>
           )}
 
-          {/* Scrollable row */}
+          {/* Scrollable row of circular icons */}
           <div
             ref={scrollRef}
-            className="scrollbar-hide flex gap-3 overflow-x-auto px-1 py-2"
+            className="scrollbar-hide flex items-center gap-4 overflow-x-auto px-2 py-3 sm:gap-5"
           >
             {qrTypes.map((type) => {
               const Icon = type.icon
@@ -205,40 +352,109 @@ export default function QRTypesSection() {
                   key={type.id}
                   type="button"
                   onClick={() => setSelectedId(type.id)}
-                  className={`flex flex-shrink-0 flex-col items-center gap-2 rounded-xl px-4 py-3 text-sm font-medium transition-all duration-200 ${
-                    isActive
-                      ? 'border-2 border-primary bg-primary-light text-primary-dark shadow-sm'
-                      : 'border-2 border-transparent bg-gray-50 text-gray-600 hover:bg-gray-100'
-                  }`}
-                  style={{ minWidth: '5.5rem' }}
+                  className="group flex flex-shrink-0 flex-col items-center gap-2"
                 >
-                  <Icon className={`h-6 w-6 ${isActive ? 'text-primary' : 'text-gray-500'}`} />
-                  <span className="whitespace-nowrap text-xs">{type.name}</span>
+                  <div
+                    className={`flex h-[60px] w-[60px] items-center justify-center rounded-full transition-all duration-200 sm:h-[68px] sm:w-[68px] ${
+                      isActive
+                        ? 'bg-primary shadow-md shadow-primary/25'
+                        : 'bg-gray-100 group-hover:bg-gray-200'
+                    }`}
+                  >
+                    <Icon
+                      className={`h-6 w-6 transition-colors sm:h-7 sm:w-7 ${
+                        isActive ? 'text-white' : 'text-gray-400 group-hover:text-gray-500'
+                      }`}
+                    />
+                  </div>
+                  <span
+                    className={`whitespace-nowrap text-xs font-medium transition-colors ${
+                      isActive ? 'text-primary-dark' : 'text-gray-500'
+                    }`}
+                  >
+                    {type.name}
+                  </span>
                 </button>
               )
             })}
           </div>
         </motion.div>
 
-        {/* Selected type details */}
+        {/* ---- Detail panel ---- */}
         <div className="mt-10">
           <AnimatePresence mode="wait">
             <motion.div
               key={selected.id}
-              initial={{ opacity: 0, y: 12 }}
+              initial={{ opacity: 0, y: 16 }}
               animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -12 }}
-              transition={{ duration: 0.3 }}
-              className="mx-auto max-w-2xl text-center"
+              exit={{ opacity: 0, y: -16 }}
+              transition={{ duration: 0.35 }}
             >
-              <h3 className="text-2xl font-bold text-navy">{selected.name}</h3>
-              <p className="mt-3 text-gray-600">{selected.description}</p>
-              <Link
-                to="/register"
-                className="mt-6 inline-block rounded-full bg-primary px-8 py-3 text-sm font-semibold text-white transition-colors hover:bg-primary-dark"
-              >
-                Try Now
-              </Link>
+              {/* Type name heading */}
+              <h3 className="mb-8 text-center text-3xl font-bold text-navy sm:text-4xl">
+                {selected.name}
+              </h3>
+
+              {/* Two-column layout with decorations */}
+              <div className="relative mx-auto max-w-5xl overflow-hidden rounded-2xl border border-gray-100 bg-white px-6 py-10 shadow-sm sm:px-10 sm:py-14">
+                {/* Sunburst lines behind phone */}
+                <SunburstBackground />
+
+                {/* Floating decoration icons */}
+                <FloatingIcons />
+
+                <div className="relative z-10 grid grid-cols-1 items-center gap-10 md:grid-cols-2 md:gap-16">
+                  {/* LEFT: Phone mockup */}
+                  <div className="flex justify-center">
+                    <PhoneMockup />
+                  </div>
+
+                  {/* RIGHT: Info sections */}
+                  <div className="space-y-0">
+                    {/* Section 1: Type description */}
+                    <div className="pb-5">
+                      <h4 className="text-lg font-bold text-navy">{selected.name}</h4>
+                      <p className="mt-2 text-sm leading-relaxed text-gray-600">
+                        {selected.description}
+                      </p>
+                    </div>
+
+                    <div className="border-t border-gray-200" />
+
+                    {/* Section 2: Customize */}
+                    <div className="py-5">
+                      <h4 className="text-lg font-bold text-navy">
+                        Customize how your QR codes look
+                      </h4>
+                      <p className="mt-2 text-sm leading-relaxed text-gray-600">
+                        Use custom color schemes and framing to suit your brand identity. You can
+                        even add your company's logo to your QR code!
+                      </p>
+                    </div>
+
+                    <div className="border-t border-gray-200" />
+
+                    {/* Section 3: Easy to edit */}
+                    <div className="pt-5">
+                      <h4 className="text-lg font-bold text-navy">Easy to edit and download</h4>
+                      <p className="mt-2 text-sm leading-relaxed text-gray-600">
+                        Download your QR codes in several formats and edit them at anytime, even
+                        after they're printed.
+                      </p>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Try Now button centered below */}
+                <div className="relative z-10 mt-10 text-center">
+                  <Link
+                    to="/register"
+                    className="inline-block rounded-full bg-primary px-10 py-3 text-sm font-semibold text-white shadow-md shadow-primary/20 transition-all hover:bg-primary-dark hover:shadow-lg"
+                  >
+                    Try Now
+                  </Link>
+                </div>
+              </div>
             </motion.div>
           </AnimatePresence>
         </div>

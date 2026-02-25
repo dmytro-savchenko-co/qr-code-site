@@ -9,8 +9,8 @@ interface StatItem {
 
 const stats: StatItem[] = [
   {
-    value: 850,
-    suffix: "K+",
+    value: 2,
+    suffix: "M",
     label: "QR codes created with our platform",
   },
   {
@@ -19,8 +19,8 @@ const stats: StatItem[] = [
     label: "Increase in social media account impressions",
   },
   {
-    value: 68,
-    suffix: "%",
+    value: 3,
+    suffix: "x",
     label: "Average increase for client retainers",
   },
 ];
@@ -61,10 +61,10 @@ function AnimatedCounter({
   }, [inView, value]);
 
   return (
-    <span>
-      {count}
-      {suffix}
-    </span>
+    <>
+      <span className="text-white">{count} </span>
+      <span className="text-[#7b8cb8]">{suffix}</span>
+    </>
   );
 }
 
@@ -75,7 +75,7 @@ export default function StatsSection() {
   return (
     <section
       ref={sectionRef}
-      className="w-full bg-gradient-to-br from-primary-light via-white to-primary-light/60 py-20 md:py-28"
+      className="w-full bg-navy py-20 md:py-28"
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Heading */}
@@ -86,10 +86,10 @@ export default function StatsSection() {
           transition={{ duration: 0.5 }}
           className="text-center"
         >
-          <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-navy">
+          <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-white">
             Data doesn't lie
           </h2>
-          <p className="mt-4 text-gray-500 text-lg max-w-2xl mx-auto">
+          <p className="mt-4 text-gray-400 text-lg max-w-2xl mx-auto">
             Want to know if our platform is effective? We'll let the numbers do
             the talking.
           </p>
@@ -104,16 +104,16 @@ export default function StatsSection() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, amount: 0.3 }}
               transition={{ duration: 0.5, delay: i * 0.15 }}
-              className="text-center"
+              className="bg-navy-light rounded-xl p-8 text-center"
             >
-              <div className="text-5xl md:text-6xl font-black text-primary">
+              <div className="text-5xl md:text-6xl font-black">
                 <AnimatedCounter
                   value={stat.value}
                   suffix={stat.suffix}
                   inView={isInView}
                 />
               </div>
-              <p className="mt-3 text-gray-500 text-base max-w-xs mx-auto">
+              <p className="mt-3 text-gray-400 text-base max-w-xs mx-auto">
                 {stat.label}
               </p>
             </motion.div>
