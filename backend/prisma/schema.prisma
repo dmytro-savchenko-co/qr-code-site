@@ -1,0 +1,55 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  password  String
+  name      String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  qrCodes   QRCode[]
+}
+
+model QRCode {
+  id         String      @id @default(cuid())
+  userId     String
+  user       User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  type       String      // url, pdf, vcard, wifi, menu, business, etc.
+  name       String
+  shortCode  String      @unique
+  targetUrl  String?
+  content    Json        // type-specific content
+  style      Json?       // colors, logo, frame config
+  isActive   Boolean     @default(true)
+  createdAt  DateTime    @default(now())
+  updatedAt  DateTime    @updatedAt
+  scanEvents ScanEvent[]
+
+  @@index([userId])
+  @@index([shortCode])
+}
+
+model ScanEvent {
+  id        String   @id @default(cuid())
+  qrCodeId  String
+  qrCode    QRCode   @relation(fields: [qrCodeId], references: [id], onDelete: Cascade)
+  timestamp DateTime @default(now())
+  ip        String?
+  userAgent String?
+  country   String?
+  city      String?
+  device    String?
+  os        String?
+  browser   String?
+  referer   String?
+
+  @@index([qrCodeId])
+  @@index([timestamp])
+}
