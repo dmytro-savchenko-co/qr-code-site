@@ -5,6 +5,7 @@
     "dev:backend": "pnpm --filter backend dev",
     "dev:frontend": "pnpm --filter frontend dev",
     "dev": "pnpm run --parallel dev:backend dev:frontend",
-    "build": "pnpm --filter backend build && pnpm --filter frontend build"
+    "build": "pnpm --filter frontend build && pnpm --filter backend build",
+    "start": "cd backend && npx prisma migrate deploy && node dist/index.js"
   }
 }
