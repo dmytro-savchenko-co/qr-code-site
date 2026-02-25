@@ -263,10 +263,19 @@ export default function CreateQRPage() {
   // Mutation
   const createMutation = useMutation({
     mutationFn: async () => {
+      // Build targetUrl for URL-based types
+      let targetUrl: string | undefined
+      if (selectedType === 'website' || selectedType === 'pdf') {
+        targetUrl = formData.url
+      } else if (selectedType === 'whatsapp') {
+        targetUrl = qrData
+      }
+
       const payload = {
         name: formData.name,
         type: selectedType,
-        content: formData,
+        targetUrl,
+        content: { ...formData, socialLinks: formData.socialLinks || [] },
         data: qrData,
         style: {
           fgColor,

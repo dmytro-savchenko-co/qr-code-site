@@ -15,21 +15,27 @@ const createSchema = z.object({
   targetUrl: z.string().url().optional(),
   content: z.record(z.string(), z.unknown()),
   style: z.record(z.string(), z.unknown()).optional(),
+  data: z.string().optional(),
 })
 
 // Create QR code
 router.post('/', async (req: AuthRequest, res) => {
   try {
-    const data = createSchema.parse(req.body)
+    const parsed = createSchema.parse(req.body)
     const shortCode = nanoid(8)
+
+    // Use the data field as targetUrl if no explicit targetUrl was provided
+    const targetUrl = parsed.targetUrl || parsed.data || null
 
     const qrCode = await prisma.qRCode.create({
       data: {
-        ...data,
+        type: parsed.type,
+        name: parsed.name,
+        targetUrl,
         shortCode,
         userId: req.userId!,
-        content: data.content as InputJsonValue,
-        style: (data.style || {}) as InputJsonValue,
+        content: parsed.content as InputJsonValue,
+        style: (parsed.style || {}) as InputJsonValue,
       },
     })
 
