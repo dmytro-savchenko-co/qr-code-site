@@ -39,7 +39,7 @@ app.get('/api/health', (_req, res) => {
 // Serve frontend static files in production
 const frontendDist = path.join(__dirname, '../../frontend/dist')
 app.use(express.static(frontendDist))
-app.get('*', (_req, res) => {
+app.get('/{*splat}', (_req, res) => {
   res.sendFile(path.join(frontendDist, 'index.html'))
 })
 
