@@ -25,16 +25,11 @@ interface QRCode {
   id: string
   name: string
   type: string
-  shortUrl: string
-  scans: number
-  active: boolean
+  shortCode: string
+  targetUrl: string | null
+  isActive: boolean
   createdAt: string
-}
-
-interface QRCodesResponse {
-  qrCodes: QRCode[]
-  total: number
-  totalScans: number
+  _count: { scanEvents: number }
 }
 
 /* ------------------------------------------------------------------ */
@@ -48,10 +43,10 @@ export default function DashboardPage() {
 
   /* ---- Fetch QR codes ---- */
   const {
-    data,
+    data: qrCodes = [],
     isLoading,
     isError,
-  } = useQuery<QRCodesResponse>({
+  } = useQuery<QRCode[]>({
     queryKey: ['qr-codes'],
     queryFn: async () => {
       const res = await api.get('/qr-codes')
@@ -75,8 +70,8 @@ export default function DashboardPage() {
 
   /* ---- Toggle active mutation ---- */
   const toggleActiveMutation = useMutation({
-    mutationFn: async ({ id, active }: { id: string; active: boolean }) => {
-      await api.patch(`/qr-codes/${id}`, { active })
+    mutationFn: async ({ id, isActive }: { id: string; isActive: boolean }) => {
+      await api.put(`/qr-codes/${id}`, { isActive })
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['qr-codes'] })
@@ -93,14 +88,13 @@ export default function DashboardPage() {
   }
 
   const handleToggleActive = (id: string, currentActive: boolean) => {
-    toggleActiveMutation.mutate({ id, active: !currentActive })
+    toggleActiveMutation.mutate({ id, isActive: !currentActive })
   }
 
   /* ---- Derived data ---- */
-  const qrCodes = data?.qrCodes ?? []
-  const totalScans = data?.totalScans ?? 0
-  const totalCodes = data?.total ?? 0
-  const activeCodes = qrCodes.filter((qr) => qr.active).length
+  const totalScans = qrCodes.reduce((sum, qr) => sum + qr._count.scanEvents, 0)
+  const totalCodes = qrCodes.length
+  const activeCodes = qrCodes.filter((qr) => qr.isActive).length
 
   const filteredCodes = searchQuery
     ? qrCodes.filter(
@@ -258,7 +252,7 @@ export default function DashboardPage() {
               key={qr.id}
               qr={qr}
               onDelete={() => handleDelete(qr.id, qr.name)}
-              onToggleActive={() => handleToggleActive(qr.id, qr.active)}
+              onToggleActive={() => handleToggleActive(qr.id, qr.isActive)}
               isDeleting={deleteMutation.isPending && deleteMutation.variables === qr.id}
             />
           ))}
@@ -287,13 +281,14 @@ function QRCodeCard({ qr, onDelete, onToggleActive, isDeleting }: QRCodeCardProp
   })
 
   const typeBadgeColors: Record<string, string> = {
-    url: 'bg-blue-50 text-blue-700',
+    website: 'bg-blue-50 text-blue-700',
+    pdf: 'bg-rose-50 text-rose-700',
     vcard: 'bg-purple-50 text-purple-700',
     wifi: 'bg-amber-50 text-amber-700',
-    email: 'bg-rose-50 text-rose-700',
-    text: 'bg-gray-100 text-gray-700',
-    phone: 'bg-green-50 text-green-700',
-    sms: 'bg-teal-50 text-teal-700',
+    business: 'bg-emerald-50 text-emerald-700',
+    social: 'bg-pink-50 text-pink-700',
+    whatsapp: 'bg-green-50 text-green-700',
+    apps: 'bg-teal-50 text-teal-700',
   }
 
   const badgeColor = typeBadgeColors[qr.type.toLowerCase()] ?? 'bg-gray-100 text-gray-700'
@@ -315,7 +310,7 @@ function QRCodeCard({ qr, onDelete, onToggleActive, isDeleting }: QRCodeCardProp
       {/* Short URL */}
       <div className="mb-3 flex items-center gap-1.5 text-sm text-gray-500">
         <ExternalLink className="h-3.5 w-3.5 shrink-0" />
-        <span className="truncate">{qr.shortUrl}</span>
+        <span className="truncate">/r/{qr.shortCode}</span>
       </div>
 
       {/* Stats row */}
@@ -323,7 +318,7 @@ function QRCodeCard({ qr, onDelete, onToggleActive, isDeleting }: QRCodeCardProp
         <div className="flex items-center gap-1 text-gray-500">
           <BarChart3 className="h-4 w-4" />
           <span>
-            {qr.scans.toLocaleString()} scan{qr.scans !== 1 ? 's' : ''}
+            {qr._count.scanEvents.toLocaleString()} scan{qr._count.scanEvents !== 1 ? 's' : ''}
           </span>
         </div>
         <span className="text-gray-300">|</span>
@@ -336,21 +331,21 @@ function QRCodeCard({ qr, onDelete, onToggleActive, isDeleting }: QRCodeCardProp
         <button
           onClick={onToggleActive}
           className="flex items-center gap-2"
-          aria-label={qr.active ? 'Deactivate QR code' : 'Activate QR code'}
+          aria-label={qr.isActive ? 'Deactivate QR code' : 'Activate QR code'}
         >
           <div
             className={`relative h-6 w-11 rounded-full transition-colors ${
-              qr.active ? 'bg-emerald-500' : 'bg-gray-300'
+              qr.isActive ? 'bg-emerald-500' : 'bg-gray-300'
             }`}
           >
             <div
               className={`absolute top-0.5 h-5 w-5 rounded-full bg-white shadow transition-transform ${
-                qr.active ? 'translate-x-5' : 'translate-x-0.5'
+                qr.isActive ? 'translate-x-5' : 'translate-x-0.5'
               }`}
             />
           </div>
-          <span className={`text-xs font-medium ${qr.active ? 'text-emerald-600' : 'text-gray-400'}`}>
-            {qr.active ? 'Active' : 'Inactive'}
+          <span className={`text-xs font-medium ${qr.isActive ? 'text-emerald-600' : 'text-gray-400'}`}>
+            {qr.isActive ? 'Active' : 'Inactive'}
           </span>
         </button>
 
