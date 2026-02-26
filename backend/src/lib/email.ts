@@ -1,14 +1,20 @@
 import nodemailer from 'nodemailer'
 
-const transporter = nodemailer.createTransport({
-  host: process.env.SMTP_HOST || 'smtp.gmail.com',
-  port: Number(process.env.SMTP_PORT) || 587,
-  secure: false,
-  auth: {
-    user: process.env.SMTP_USER,
-    pass: process.env.SMTP_PASS,
-  },
-})
+const smtpConfigured = !!(process.env.SMTP_HOST && process.env.SMTP_USER && process.env.SMTP_PASS)
+
+const transporter = smtpConfigured
+  ? nodemailer.createTransport({
+      host: process.env.SMTP_HOST,
+      port: Number(process.env.SMTP_PORT) || 587,
+      secure: false,
+      auth: {
+        user: process.env.SMTP_USER,
+        pass: process.env.SMTP_PASS,
+      },
+      connectionTimeout: 5000,
+      socketTimeout: 5000,
+    })
+  : null
 
 export async function sendPasswordResetEmail(to: string, resetUrl: string) {
   const html = `
@@ -26,6 +32,12 @@ export async function sendPasswordResetEmail(to: string, resetUrl: string) {
       </p>
     </div>
   `
+
+  if (!transporter) {
+    console.warn('SMTP not configured — skipping password reset email to', to)
+    console.warn('Reset URL:', resetUrl)
+    return
+  }
 
   await transporter.sendMail({
     from: process.env.SMTP_FROM || '"QR Code.io" <noreply@qr-code.io>',
