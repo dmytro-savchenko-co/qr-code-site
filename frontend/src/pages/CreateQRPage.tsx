@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect, useCallback } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
-import { useMutation } from '@tanstack/react-query'
+import { useMutation, useQueryClient } from '@tanstack/react-query'
 import {
   Globe,
   FileText,
@@ -189,6 +189,7 @@ function buildQRData(type: QRType, form: FormData): string {
 export default function CreateQRPage() {
   const { user, loading: authLoading } = useAuth()
   const navigate = useNavigate()
+  const queryClient = useQueryClient()
 
   // Redirect if not authenticated
   useEffect(() => {
@@ -288,6 +289,7 @@ export default function CreateQRPage() {
       return api.post('/qr-codes', payload)
     },
     onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['qr-codes'] })
       toast.success('QR code created successfully!')
       navigate('/dashboard')
     },
