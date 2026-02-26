@@ -7,6 +7,7 @@ import ForgotPasswordPage from './pages/ForgotPasswordPage'
 import ResetPasswordPage from './pages/ResetPasswordPage'
 import DashboardPage from './pages/DashboardPage'
 import CreateQRPage from './pages/CreateQRPage'
+import EditQRPage from './pages/EditQRPage'
 import NotFoundPage from './pages/NotFoundPage'
 
 export default function App() {
@@ -20,6 +21,7 @@ export default function App() {
         <Route path="/reset-password/:token" element={<ResetPasswordPage />} />
         <Route path="/dashboard" element={<DashboardPage />} />
         <Route path="/qr/create" element={<CreateQRPage />} />
+        <Route path="/qr/:id/edit" element={<EditQRPage />} />
         <Route path="*" element={<NotFoundPage />} />
       </Routes>
     </AuthProvider>
